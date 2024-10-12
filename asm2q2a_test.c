@@ -1,15 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Include the struct definition and merge function from asm2q2a.c
-#include "asm2q2a.c"
+struct linkedlist {
+    int data;
+    struct linkedlist * next;
+};
+
+// Function prototype for merge
+struct linkedlist * merge(struct linkedlist * head1, struct linkedlist * head2);
 
 // Helper function to create a new node
-struct linkedlist* createNode(int data) {
-    struct linkedlist* newNode = (struct linkedlist*)malloc(sizeof(struct linkedlist));
-    newNode->data = data;
-    newNode->next = NULL;
-    return newNode;
+struct linkedlist* newNode(int data) {
+    struct linkedlist* node = (struct linkedlist*)malloc(sizeof(struct linkedlist));
+    node->data = data;
+    node->next = NULL;
+    return node;
 }
 
 // Helper function to print the linked list
@@ -22,17 +27,17 @@ void printList(struct linkedlist* head) {
 }
 
 int main() {
-    // Create the first sorted linked list: 1 -> 3 -> 5 -> 7
-    struct linkedlist* head1 = createNode(1);
-    head1->next = createNode(3);
-    head1->next->next = createNode(5);
-    head1->next->next->next = createNode(7);
+    // Create first sorted linked list: 1 -> 3 -> 5 -> 7
+    struct linkedlist* head1 = newNode(1);
+    head1->next = newNode(3);
+    head1->next->next = newNode(5);
+    head1->next->next->next = newNode(7);
 
-    // Create the second sorted linked list: 2 -> 4 -> 6 -> 8
-    struct linkedlist* head2 = createNode(2);
-    head2->next = createNode(4);
-    head2->next->next = createNode(6);
-    head2->next->next->next = createNode(8);
+    // Create second sorted linked list: 2 -> 4 -> 6 -> 8
+    struct linkedlist* head2 = newNode(2);
+    head2->next = newNode(4);
+    head2->next->next = newNode(6);
+    head2->next->next->next = newNode(8);
 
     printf("First list: ");
     printList(head1);

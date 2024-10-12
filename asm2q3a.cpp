@@ -35,5 +35,6 @@ class FreqStack {
                     return mode;
                 }
             }
+            return -1;
         }
 };

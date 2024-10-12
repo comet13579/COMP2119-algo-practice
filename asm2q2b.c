@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdbool.h>
-//not finished yet
 
 struct listNode {
     int data;               // Data stored in the node
@@ -36,8 +35,8 @@ ListNode ** getLinkedListCyclePointers(ListNode * arrPtr, int *length){
             returnArray[*length] = tortoise;
             (*length)++;
             countcyclecount = 2;
-            break;
         }
+
         if (tortoise == hare && countcyclecount == 0){
             countcyclecount = 1;
         }
