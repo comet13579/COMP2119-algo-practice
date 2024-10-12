@@ -3,7 +3,7 @@
 
 class FreqStack {
     private:
-        int stack[10];
+        int stack[MAX_SIZE];
         int itemInList;
         int lastmode() {
             int mode = stack[itemInList - 1];
@@ -33,9 +33,8 @@ class FreqStack {
         }
 
     public:
-        FreqStack(){
-            int stack[MAX_SIZE] = {};
-            itemInList = 0;  
+        FreqStack() {
+            itemInList = 0;
         }
         void push(int value){
             stack[itemInList] = value;
