@@ -30,3 +30,4 @@ struct linkedlist * merge(struct linkedlist * head1, struct linkedlist * head2){
     }
     return start;
 }
+//q2a

@@ -1,37 +1,51 @@
-#include <vector>
-#include <unordered_map>
+//C++
+#define MAX_SIZE 10
 
 class FreqStack {
     private:
-        std::vector<int> stack;
-        int lastmode(){
-            std::unordered_map<int, int> map;
-            for(int i = 0; i < stack.size(); i++){
-                map[stack[i]]++;
-            }
-            int max = 0;
-            int mode;
-            for(int i = stack.size() - 1; i >= 0; i--){
-                if(map[stack[i]] > max){
-                    max = map[stack[i]];
+        int stack[10];
+        int itemInList;
+        int lastmode() {
+            int mode = stack[itemInList - 1];
+            int maxFreq = 1;
+            int currentFreq;
+
+            for (int i = itemInList - 1; i >= 0; i--){
+                currentFreq = 1;
+                for (int j = i - 1; j >= 0; j--) {
+                    if (stack[i] == stack[j]) {
+                    currentFreq++;
+                    }
+                }
+                if (currentFreq > maxFreq) {
+                    maxFreq = currentFreq;
                     mode = stack[i];
                 }
             }
             return mode;
         }
 
+        void remove(int index){
+            for (int i = index; i < itemInList - 1; i++){
+                stack[i] = stack[i + 1];
+            }
+            itemInList--;
+        }
+
     public:
         FreqStack(){
-            stack = {};
+            int stack[MAX_SIZE] = {};
+            itemInList = 0;  
         }
         void push(int value){
-            stack.push_back(value);
+            stack[itemInList] = value;
+            itemInList++;
         }
         int pop(){
             int mode = lastmode();
-            for (int i = stack.size() - 1; i >= 0; i--){
+            for (int i = itemInList - 1; i >= 0; i--){
                 if(stack[i] == mode){
-                    stack.erase(stack.begin() + i);
+                    remove(i);
                     return mode;
                 }
             }

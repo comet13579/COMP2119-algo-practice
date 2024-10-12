@@ -1,4 +1,6 @@
 int reOrder2(int *A, int n){
+    // binary search for the lowest point
+    // A[n - 1] < A[0] always true
     int prev,next;
     int k = n / 2;
     while (1){

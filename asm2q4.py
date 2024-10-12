@@ -20,7 +20,9 @@ for i in hashtable:
         newhash = (newhash + 3 * newI) % 11
         newI += 1
     totalI += newI - 1
+    print(newI - 1, end=" ")
     newhashtable.append(newhash)
+print()
 print(hashtable)
 print(newhashtable)
 print("total unsuccessful search:", totalI)
@@ -37,7 +39,8 @@ for i in hashtable:
         newI += 1
     totalI += newI - 1
     newhashtable.append(newhash)
-
+    print(newI - 1, end=" ")
+print()
 print(hashtable)
 print(newhashtable)
 print("total unsuccessful search:", totalI)

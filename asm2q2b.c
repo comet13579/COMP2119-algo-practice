@@ -1,5 +1,5 @@
+//C language
 #include <stdlib.h>
-#include <stdbool.h>
 
 struct listNode {
     int data;               // Data stored in the node
@@ -9,20 +9,19 @@ typedef struct listNode ListNode;
 
 ListNode ** getLinkedListCyclePointers(ListNode * arrPtr, int *length){
     //Floyd's tortoise and hare algorithm
-    //copied from COMP2113 Assignment 4
     ListNode * tortoise = arrPtr;
     ListNode * hare = arrPtr;
     ListNode ** returnArray = NULL; //array of pointers to the nodes in the cycle
     int cycleLength = 0;
-    int countcyclecount = 0;
+    int cyclecount = 0; //count the number of rounds went through a loop
     while (tortoise != NULL && hare != NULL && hare->next != NULL){
         tortoise = tortoise->next;
         hare = hare->next->next;
-        if (countcyclecount == 1){
+        if (cyclecount == 1){
             cycleLength++;
         }
 
-        if (countcyclecount == 2){
+        if (cyclecount == 2){
             returnArray[*length] = tortoise;
             (*length)++;
             if (tortoise == hare){
@@ -30,15 +29,15 @@ ListNode ** getLinkedListCyclePointers(ListNode * arrPtr, int *length){
             }
         }
 
-        if (countcyclecount  == 1 && tortoise == hare){
+        if (cyclecount  == 1 && tortoise == hare){
             returnArray = (ListNode **) malloc(sizeof(ListNode *) * cycleLength);
             returnArray[*length] = tortoise;
             (*length)++;
-            countcyclecount = 2;
+            cyclecount = 2;
         }
 
-        if (tortoise == hare && countcyclecount == 0){
-            countcyclecount = 1;
+        if (tortoise == hare && cyclecount == 0){
+            cyclecount = 1;
         }
     }
     return NULL; // return NULL if there is no cycle
@@ -69,3 +68,4 @@ ListNode * getBeginNode(ListNode * arrPtr){
         ongoingPointer = ongoingPointer->next;
     }
 }
+//q2b
