@@ -1,6 +1,6 @@
 import math
 
-n = 100 ## 100 growth
+n = 143 ## 100 growth
 
 print("a:", math.pow(n, math.pi))
 print("b:", math.pow(math.pi, n))
