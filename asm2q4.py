@@ -1,13 +1,15 @@
-hashtable = [17,94,86,22,98,79,54,78]
+hashtable = [17,94,86,22,98,79,54,38]
 
-newhashtable = []
-totalI = 0
+linkedlisthash = [None] * 7
+def q1hash(hash):
+    return hash % 7
+for i in range(7):
+    linkedlisthash[i] = []
 for i in hashtable:
-    totalI += newhashtable.count(i % 7)
-    newhashtable.append(i % 7)
-print(hashtable)
-print(newhashtable)
-print(f"Q4b: average search till uncessessful search: {(7 + totalI) /7}")
+    newhash = i % 7
+    linkedlisthash[newhash].append(i)
+print(linkedlisthash)
+print(f"Q4a: average search till uncessessful search: {(7 + 8) /7}")
 #q4a
 
 def q2hash(hash,i):
