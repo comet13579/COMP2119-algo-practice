@@ -30,8 +30,8 @@ void runTestCases() {
 
     // Test case 3: Single element
     FreqStack fs3;
-    fs3.push(42);
-    assert(fs3.pop() == 42);
+    fs3.push(4);
+    assert(fs3.pop() == 4);
 
     // Test case 4: Multiple pushes and pops
     FreqStack fs4;

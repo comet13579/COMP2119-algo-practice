@@ -4,25 +4,16 @@
 class FreqStack {
     private:
         int stack[MAX_SIZE];
+        int count[10] = {0}; // only 10 possible values
         int itemInList;
-        int lastmode() {
-            int mode = stack[itemInList - 1];
-            int maxFreq = 1;
-            int currentFreq;
-
-            for (int i = itemInList - 1; i >= 0; i--){
-                currentFreq = 1;
-                for (int j = i - 1; j >= 0; j--) {
-                    if (stack[i] == stack[j]) {
-                    currentFreq++;
-                    }
-                }
-                if (currentFreq > maxFreq) {
-                    maxFreq = currentFreq;
-                    mode = stack[i];
+        int maxoccur() {
+            int max = 0;
+            for (int i = 0; i < MAX_SIZE; i++) {
+                if (count[i] > max) {
+                    max = count[i];
                 }
             }
-            return mode;
+            return max;
         }
 
         void remove(int index){
@@ -38,14 +29,17 @@ class FreqStack {
         }
         void push(int value){
             stack[itemInList] = value;
+            count[value]++;
             itemInList++;
         }
         int pop(){
-            int mode = lastmode();
+            int max = maxoccur();
             for (int i = itemInList - 1; i >= 0; i--){
-                if(stack[i] == mode){
+                if (count[stack[i]] == max){
+                    int temp = stack[i];
                     remove(i);
-                    return mode;
+                    count[temp]--;
+                    return temp;
                 }
             }
             return -1;
