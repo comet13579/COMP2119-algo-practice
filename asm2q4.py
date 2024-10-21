@@ -41,7 +41,7 @@ print(f"Q4b: average search till uncessessful search: {count/11}")
 #q4b
 
 def q3hash(hash,i):
-    return (hash % 11 + i * (2 - i % 2)) % 11
+    return (hash % 11 + i * (2 - hash % 2)) % 11
 
 hashtablevalues = []
 probinghash = [None] * 11
