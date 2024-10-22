@@ -3,20 +3,6 @@
 #include <limits.h>
 using namespace std;
 
-void printvector(vector<int> v){
-    for (int i = 0; i < v.size(); i++){
-        cout << v[i] << " ";
-    }
-    cout << endl;
-}
-
-void printvector1(vector<bool> v){
-    for (int i = 0; i < v.size(); i++){
-        cout << v[i] << " ";
-    }
-    cout << endl;
-}
-
 vector<vector<int>> inputVector(){
     int n,m;
     cin >> n >> m;
