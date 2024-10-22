@@ -1,18 +1,15 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-
 using namespace std;
 
-vector<vector<int>> v;
-
-void checkVector(int s,vector<bool>* visited) {
+void checkVector(int s,vector<bool>* visited, vector<vector<int>> v) {
     if ((*visited)[s]) {
         return;
     }
     (*visited)[s] = true;
     for (int i = 0; i < v[s].size(); i++) {
-        checkVector(v[s][i], visited);
+        checkVector(v[s][i], visited,v);
     }
 }
 
@@ -36,9 +33,9 @@ vector<vector<int>> inputVector(){
 
 int main(){
     int s;
-    v = inputVector();
+    vector<vector<int>> v = inputVector();
     vector<bool> visited(v.size(),false);
     cin >> s;
-    checkVector(s,&visited);
+    checkVector(s,&visited,v);
     cout << count(visited.begin(),visited.end(),false) << endl;
 }

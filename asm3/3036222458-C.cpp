@@ -3,6 +3,20 @@
 #include <limits.h>
 using namespace std;
 
+void printvector(vector<int> v){
+    for (int i = 0; i < v.size(); i++){
+        cout << v[i] << " ";
+    }
+    cout << endl;
+}
+
+void printvector1(vector<bool> v){
+    for (int i = 0; i < v.size(); i++){
+        cout << v[i] << " ";
+    }
+    cout << endl;
+}
+
 vector<vector<int>> inputVector(){
     int n,m;
     cin >> n >> m;
@@ -21,6 +35,14 @@ vector<vector<int>> inputVector(){
     return v;
 }
 
+vector<int> inputConstraints(int n) {
+    vector<int> v(n);
+    for (auto it = v.begin(); it != v.end(); ++it) {
+        cin >> *it;
+    }
+    return v;
+}
+
 int mindist(vector<int> dist, vector<bool> visited){
     int min = INT_MAX;
     int min_index;
@@ -33,17 +55,21 @@ int mindist(vector<int> dist, vector<bool> visited){
     return min_index;
 }
 
-int dijkstra(int s, int d,vector<vector<int>> v){
+int dijkstra(int s, int d,vector<vector<int>> v,vector<int> lockdown){
     vector<int> dist(v.size(), INT_MAX);
     vector<bool> visited(v.size(), false);
-    int index;
+    int index,temp;
     dist[s] = 0;
     for (int i = 0;i < v.size();i++){
         index = mindist(dist, visited);
         visited[index] = true;
         for (int j = 0; j < v.size(); j++){
             if (!visited[j] && v[index][j] && dist[index] != INT_MAX && dist[index] + v[index][j] < dist[j]){
-                dist[j] = dist[index] + v[index][j];
+                temp = dist[index] + v[index][j];
+                if (temp >= lockdown[j] && dist[index] != INT_MAX){
+                    continue;
+                }
+                dist[j] = temp;
             }
         }
     }
@@ -58,6 +84,7 @@ int dijkstra(int s, int d,vector<vector<int>> v){
 int main(){
     int s,d;
     vector<vector<int>> v = inputVector();
+    vector<int> lockdown = inputConstraints(v.size());
     cin >> s >> d;
-    cout << dijkstra(s,d,v);
+    cout << dijkstra(s,d,v,lockdown);
 }
