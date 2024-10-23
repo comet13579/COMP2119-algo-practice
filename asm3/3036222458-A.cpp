@@ -3,7 +3,7 @@
 #include <algorithm>
 using namespace std;
 
-void checkVector(int s,vector<bool>* visited, vector<vector<int>> v) {
+void checkVector(int s,vector<bool>* visited, vector<vector<int> > v) {
     if ((*visited)[s]) {
         return;
     }
@@ -13,10 +13,10 @@ void checkVector(int s,vector<bool>* visited, vector<vector<int>> v) {
     }
 }
 
-vector<vector<int>> inputVector(){
+vector<vector<int> > inputVector(){
     int n,m;
     cin >> n >> m;
-    vector<vector<int>> v;
+    vector<vector<int> > v;
     for (int i = 0; i < n; i++){
         vector<int> v1;
         v.push_back(v1);
@@ -33,7 +33,7 @@ vector<vector<int>> inputVector(){
 
 int main(){
     int s;
-    vector<vector<int>> v = inputVector();
+    vector<vector<int> > v = inputVector();
     vector<bool> visited(v.size(),false);
     cin >> s;
     checkVector(s,&visited,v);

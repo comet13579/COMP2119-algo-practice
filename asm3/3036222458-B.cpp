@@ -3,10 +3,10 @@
 #include <limits.h>
 using namespace std;
 
-vector<vector<int>> inputVector(){
+vector<vector<int> > inputVector(){
     int n,m;
     cin >> n >> m;
-    vector<vector<int>> v;
+    vector<vector<int> > v;
     for (int i = 0; i < n; i++){
         vector<int> v1(n,0);
         v.push_back(v1);
@@ -33,7 +33,7 @@ int mindist(vector<int> dist, vector<bool> visited){
     return min_index;
 }
 
-int dijkstra(int s, int d,vector<vector<int>> v){
+int dijkstra(int s, int d,vector<vector<int> > v){
     vector<int> dist(v.size(), INT_MAX);
     vector<bool> visited(v.size(), false);
     int index;
@@ -57,7 +57,7 @@ int dijkstra(int s, int d,vector<vector<int>> v){
 
 int main(){
     int s,d;
-    vector<vector<int>> v = inputVector();
+    vector<vector<int> > v = inputVector();
     cin >> s >> d;
-    cout << dijkstra(s,d,v);
+    cout << dijkstra(s,d,v) << endl;
 }
