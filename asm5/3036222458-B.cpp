@@ -1,143 +1,189 @@
 #include <iostream>
-#include <cstdint>
 using namespace std;
 
-class S{
-    private:
-        S * parent;
-        S * left;
-        S * right;
-        int64_t data;
-        int64_t sum;
+class AVLTree {
+private:
+    long long key;
+    AVLTree* left;
+    AVLTree* right;
+    int height;
+    int size;
+    long long sum;
 
-        void removeNode(S * toRemove){
-            if (toRemove -> left == NULL && toRemove -> right == NULL){
-                if (this -> left == toRemove){
-                    this -> left == NULL;
-                }
-                else{
-                    this -> right == NULL;
-                }
-                delete(toRemove);
-                return;
-            }
+public:
+    AVLTree(long long val) {
+        key = val;
+        left = nullptr;
+        right = nullptr;
+        height = 1;
+        size = 1;
+        sum = val;
+    }
+
+    int getHeight() {
+        return (this != nullptr) ? this->height : 0;
+    }
+
+    int getSize() {
+        return (this != nullptr) ? this->size : 0;
+    }
+
+    long long getSum() {
+        return (this != nullptr) ? this->sum : 0LL;
+    }
+
+    int getBalance() {
+        if (this == nullptr) {
+            return 0;
+        }
+        return left->getHeight() - right->getHeight();
+    }
+
+    void update() {
+        if (this != nullptr) {
+            height = 1 + max(left ? left->getHeight() : 0, right ? right->getHeight() : 0);
+            size = 1 + (left ? left->getSize() : 0) + (right ? right->getSize() : 0);
+            sum = key + (left ? left->getSum() : 0) + (right ? right->getSum() : 0);
+        }
+    }
+
+    AVLTree* rightRotate() {
+        AVLTree* x = this->left;
+        AVLTree* T2 = x->right;
+
+        x->right = this;
+        this->left = T2;
+
+        this->update();
+        x->update();
+
+        return x;
+    }
+
+    AVLTree* leftRotate() {
+        AVLTree* y = this->right;
+        AVLTree* T2 = y->left;
+
+        y->left = this;
+        this->right = T2;
+
+        this->update();
+        y->update();
+
+        return y;
+    }
+
+    AVLTree* insert(long long val) {
+        if (this == nullptr) {
+            return new AVLTree(val);
         }
 
-    public:
-        S(int64_t input){
-            parent = NULL;
-            left = NULL;
-            right = NULL;
-            data = input;
-            sum = input;
+        if (val < key) {
+            left = left ? left->insert(val) : new AVLTree(val);
+        } else {
+            right = right ? right->insert(val) : new AVLTree(val);
         }
 
-        S(int64_t input, S * p){
-            parent = p;
-            left = NULL;
-            right = NULL;
-            data = input;
-            sum = input;
+        update();
+
+        int balance = getBalance();
+
+        // Left Left Case
+        if (balance > 1 && val < left->key) {
+            return rightRotate();
         }
 
-        void Insert(int64_t input){
-            if (input < data){
-                if (left == NULL){
-                    left = new S(input);
-                    this -> left -> parent = this;
-                }
-                else{
-                    this->left->Insert(input);
-                }
-            }
-            else{
-                if (right == NULL){
-                    right = new S(input);
-                    this -> right -> parent = this;
-                }
-                else{
-                    this->right->Insert(input);
-                }
-            }
+        // Right Right Case
+        if (balance < -1 && val > right->key) {
+            return leftRotate();
         }
 
-        void Remove(int64_t input){
-            if (input < data){
-                if (this -> left -> data == input){
-                    removeNode(this -> left);
-                    this -> left = NULL;
-                }
-                else{
-                    this -> left -> Remove(input);
-                }
-            }
-            else{
-                if (this -> right -> data == input){
-                    removeNode(this -> right);
-                    this -> right = NULL;
-                }
-                else{
-                    this -> right -> Remove(input);
-                }
-            }
-        } //problematic
-
-        int64_t FindKth(int &k){
-            if (this -> left != NULL){
-                int64_t result = this -> left -> FindKth(k);
-                if (!k){
-                    return result;
-                }
-            }
-
-            k--;
-            if (!k){
-                return data;
-            }
-
-            if (this -> right != NULL){
-                return this -> right -> FindKth(k);
-            }
-            return -1;
+        // Left Right Case
+        if (balance > 1 && val > left->key) {
+            left = left->leftRotate();
+            return rightRotate();
         }
 
-        int Index(int64_t x){
-            if (x < data){
-                this -> 
-            }
+        // Right Left Case
+        if (balance < -1 && val < right->key) {
+            right = right->rightRotate();
+            return leftRotate();
         }
+
+        return this;
+    }
+
+    AVLTree* findMin() {
+        AVLTree* current = this;
+        while (current->left != nullptr) {
+            current = current->left;
+        }
+        return current;
+    }
+
+    long long findKth(int k) {
+        int leftSize = left ? left->getSize() : 0;
+        if (k <= leftSize) {
+            return left->findKth(k);
+        }
+        if (k == leftSize + 1) {
+            return key;
+        }
+        return right->findKth(k - leftSize - 1);
+    }
+
+    int findIndex(long long x) {
+        if (x < key) {
+            return left ? left->findIndex(x) : 0;
+        }
+        if (x > key) {
+            return (left ? left->getSize() : 0) + 1 + (right ? right->findIndex(x) : 0);
+        }
+        return (left ? left->getSize() : 0) + 1;
+    }
+
+    long long sumK(int k) {
+        if (k <= 0) return 0;
+        int leftSize = left ? left->getSize() : 0;
+        
+        if (leftSize >= k) {
+            return left->sumK(k);
+        }
+        
+        long long leftSum = (left ? left->getSum() : 0) + key;
+        if (k == leftSize + 1) {
+            return leftSum;
+        }
+        return leftSum + (right ? right->sumK(k - leftSize - 1) : 0);
+    }
 };
 
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
 
-int main(){
-    int n;
-    int cmd;
-    int64_t data;
-    S * s;
+    int n,k,op;
+    long long x;
     cin >> n;
-    cin >> cmd >> data;
-    if (cmd == 1){
-        s = new S(data);
-    }
-    for (int i = 1; i < n; i++){
-        cin >> cmd >> data;
-        switch (cmd){
-            case 1:
-                s->Insert(data);
-                break;
-            case 2:
-                s->Remove(data);
-                break;
-            case 3:
-                cout << s->FinKth(data) << endl;
-                break;
-            case 4:
-                cout << s->Index(data) << endl;
-                break;
-            case 5:
-                cout << s->Sum(data) << endl;
-                break;
+    AVLTree* root = nullptr;
+
+    for (int i = 0; i < n; i++) {
+        cin >> op;
+        if (op == 1) {
+            cin >> x;
+            root = root ? root->insert(x) : new AVLTree(x);
+        }
+        else if (op == 3) {
+            cin >> k;
+            cout << root->findKth(k) << "\n";
+        }
+        else if (op == 4) {
+            cin >> x;
+            cout << root->findIndex(x) << "\n";
+        }
+        else if (op == 5) {
+            cin >> k;
+            cout << root->sumK(k) << "\n";
         }
     }
-    return 0;
 }
