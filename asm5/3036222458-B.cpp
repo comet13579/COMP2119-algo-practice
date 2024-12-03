@@ -67,8 +67,15 @@ private:
     }
     
 public:
-    AVLTree(long long x) 
-        : key(x), left(nullptr), right(nullptr), height(1), size(1), sum(x) {}
+    AVLTree(long long x) {
+        key = x;
+        left = nullptr;
+        right = nullptr;
+        height = 1;
+        size = 1;
+        sum = x;
+    }
+
     
     AVLTree* insert(long long val) {
         if (val < key) {

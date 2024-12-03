@@ -80,7 +80,10 @@ private:
     }
 
 public:
-    Treap() : root(nullptr) {}
+    Treap() {
+        root = nullptr;
+    }
+
 
     void insert(int position, long long value) {
         TreapNode *node = new TreapNode(value);
