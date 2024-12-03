@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 using namespace std;
 
@@ -9,120 +10,160 @@ private:
     int height;
     int size;
     long long sum;
-
-public:
-    AVLTree(long long val) {
-        key = val;
-        left = nullptr;
-        right = nullptr;
-        height = 1;
-        size = 1;
-        sum = val;
+    
+    int getHeight(AVLTree* node) const { 
+        return (node != nullptr) ? node->height : 0; 
     }
-
-    int getHeight() {
-        return (this != nullptr) ? this->height : 0;
+    
+    int getSize(AVLTree* node) const { 
+        return (node != nullptr) ? node->size : 0; 
     }
-
-    int getSize() {
-        return (this != nullptr) ? this->size : 0;
+    
+    long long getSum(AVLTree* node) const { 
+        return (node != nullptr) ? node->sum : 0LL; 
     }
-
-    long long getSum() {
-        return (this != nullptr) ? this->sum : 0LL;
+    
+    int getBalance(AVLTree* node) const {
+        return node ? getHeight(node->left) - getHeight(node->right) : 0;
     }
-
-    int getBalance() {
-        if (this == nullptr) {
-            return 0;
-        }
-        return left->getHeight() - right->getHeight();
-    }
-
+    
     void update() {
-        if (this != nullptr) {
-            height = 1 + max(left ? left->getHeight() : 0, right ? right->getHeight() : 0);
-            size = 1 + (left ? left->getSize() : 0) + (right ? right->getSize() : 0);
-            sum = key + (left ? left->getSum() : 0) + (right ? right->getSum() : 0);
-        }
+        height = 1 + max(getHeight(left), getHeight(right));
+        size = 1 + getSize(left) + getSize(right);
+        sum = key + getSum(left) + getSum(right);
     }
-
-    AVLTree* rightRotate() {
-        AVLTree* x = this->left;
+    
+    AVLTree* rightRotate(AVLTree* y) {
+        AVLTree* x = y->left;
         AVLTree* T2 = x->right;
-
-        x->right = this;
-        this->left = T2;
-
-        this->update();
+        
+        x->right = y;
+        y->left = T2;
+        
+        y->update();
         x->update();
-
+        
         return x;
     }
-
-    AVLTree* leftRotate() {
-        AVLTree* y = this->right;
+    
+    AVLTree* leftRotate(AVLTree* x) {
+        AVLTree* y = x->right;
         AVLTree* T2 = y->left;
-
-        y->left = this;
-        this->right = T2;
-
-        this->update();
+        
+        y->left = x;
+        x->right = T2;
+        
+        x->update();
         y->update();
-
+        
         return y;
     }
-
+    
+    AVLTree* minValueNode(AVLTree* node) const {
+        AVLTree* current = node;
+        while (current->left)
+            current = current->left;
+        return current;
+    }
+    
+public:
+    AVLTree(long long x) 
+        : key(x), left(nullptr), right(nullptr), height(1), size(1), sum(x) {}
+    
     AVLTree* insert(long long val) {
-        if (this == nullptr) {
-            return new AVLTree(val);
-        }
-
         if (val < key) {
-            left = left ? left->insert(val) : new AVLTree(val);
+            if (left == nullptr) {
+                left = new AVLTree(val);
+            } else {
+                left = left->insert(val);
+            }
         } else {
-            right = right ? right->insert(val) : new AVLTree(val);
+            if (right == nullptr) {
+                right = new AVLTree(val);
+            } else {
+                right = right->insert(val);
+            }
         }
-
+        
         update();
-
-        int balance = getBalance();
-
+        
+        int balance = getBalance(this);
+        
         // Left Left Case
-        if (balance > 1 && val < left->key) {
-            return rightRotate();
-        }
-
+        if (balance > 1 && val < left->key)
+            return rightRotate(this);
+            
         // Right Right Case
-        if (balance < -1 && val > right->key) {
-            return leftRotate();
-        }
-
+        if (balance < -1 && val > right->key)
+            return leftRotate(this);
+            
         // Left Right Case
         if (balance > 1 && val > left->key) {
-            left = left->leftRotate();
-            return rightRotate();
+            left = leftRotate(left);
+            return rightRotate(this);
         }
-
+        
         // Right Left Case
         if (balance < -1 && val < right->key) {
-            right = right->rightRotate();
-            return leftRotate();
+            right = rightRotate(right);
+            return leftRotate(this);
+        }
+        
+        return this;
+    }
+    
+    AVLTree* remove(long long val) {
+        if (val < key) {
+            if (left) left = left->remove(val);
+        }
+        else if (val > key) {
+            if (right) right = right->remove(val);
+        }
+        else {
+            if (!left || !right) {
+                AVLTree* temp = left ? left : right;
+                if (!temp) {
+                    // No child case
+                    return nullptr;
+                } else {
+                    // One child case
+                    *this = *temp;
+                    delete temp;
+                }
+            } 
+            else {
+                AVLTree* temp = minValueNode(right);
+                key = temp->key;
+                right = right->remove(temp->key);
+            }
+        }
+    
+        update();
+    
+        int balance = getBalance(this);
+    
+        // Perform rotations if needed
+        if (balance > 1 && getBalance(left) >= 0)
+            return rightRotate(this);
+        
+        if (balance > 1 && getBalance(left) < 0) {
+            left = leftRotate(left);
+            return rightRotate(this);
         }
 
+        if (balance < -1 && getBalance(right) <= 0)
+            return leftRotate(this);
+
+        if (balance < -1 && getBalance(right) > 0) {
+            right = rightRotate(right);
+            return leftRotate(this);
+        }
         return this;
     }
 
-    AVLTree* findMin() {
-        AVLTree* current = this;
-        while (current->left != nullptr) {
-            current = current->left;
-        }
-        return current;
-    }
-
+    
     long long findKth(int k) {
-        int leftSize = left ? left->getSize() : 0;
+        int leftSize = getSize(left);
         if (k <= leftSize) {
             return left->findKth(k);
         }
@@ -131,59 +172,79 @@ public:
         }
         return right->findKth(k - leftSize - 1);
     }
-
+    
     int findIndex(long long x) {
         if (x < key) {
             return left ? left->findIndex(x) : 0;
         }
         if (x > key) {
-            return (left ? left->getSize() : 0) + 1 + (right ? right->findIndex(x) : 0);
+            return getSize(left) + 1 + (right ? right->findIndex(x) : 0);
         }
-        return (left ? left->getSize() : 0) + 1;
+        return getSize(left) + 1;
     }
-
+    
     long long sumK(int k) {
         if (k <= 0) return 0;
-        int leftSize = left ? left->getSize() : 0;
         
+        int leftSize = getSize(left);
         if (leftSize >= k) {
             return left->sumK(k);
         }
         
-        long long leftSum = (left ? left->getSum() : 0) + key;
+        long long leftSum = getSum(left);
         if (k == leftSize + 1) {
-            return leftSum;
+            return leftSum + key;
         }
-        return leftSum + (right ? right->sumK(k - leftSize - 1) : 0);
+        
+        return leftSum + key + right->sumK(k - leftSize - 1);
     }
 };
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(0);
-
-    int n,k,op;
+    
+    int n,k,cmd;
     long long x;
     cin >> n;
-    AVLTree* root = nullptr;
-
+    
+    AVLTree* tree = nullptr;
+    
     for (int i = 0; i < n; i++) {
-        cin >> op;
-        if (op == 1) {
-            cin >> x;
-            root = root ? root->insert(x) : new AVLTree(x);
-        }
-        else if (op == 3) {
-            cin >> k;
-            cout << root->findKth(k) << "\n";
-        }
-        else if (op == 4) {
-            cin >> x;
-            cout << root->findIndex(x) << "\n";
-        }
-        else if (op == 5) {
-            cin >> k;
-            cout << root->sumK(k) << "\n";
+        cin >> cmd;
+        
+        switch (cmd) {
+            case 1:
+                cin >> x;
+                if (!tree) {
+                    tree = new AVLTree(x);
+                }
+                else {
+                    tree = tree->insert(x);
+                }
+                break;
+                
+            case 2:
+                cin >> x;
+                tree = tree->remove(x);
+                break;
+                
+            case 3:
+                cin >> k;
+                cout << tree->findKth(k) << "\n";
+                break;
+                
+            case 4:
+                cin >> x;
+                cout << tree->findIndex(x) << "\n";
+                break;
+                
+            case 5:
+                cin >> k;
+                cout << tree->sumK(k) << "\n";
+                break;
         }
     }
+ 
+    return 0;
 }
