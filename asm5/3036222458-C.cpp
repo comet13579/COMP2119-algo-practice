@@ -159,7 +159,6 @@ int main() {
         cin >> cmd;
         switch (cmd) {
             case 1: {
-                long long x;
                 cin >> k1 >> x;
                 treap.insert(k1, x);
                 break;
