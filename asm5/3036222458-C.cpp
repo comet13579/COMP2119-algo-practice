@@ -2,7 +2,7 @@
 #include <unordered_map>
 using namespace std;
 
-class TreapNode {
+struct TreapNode {
 public:
     long long value;
     int size;
@@ -141,7 +141,8 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(0);
 
-    int n, m;
+    int n, m,cmd,k1,k2;
+    long long x;
     cin >> n >> m;
 
     Treap treap;
@@ -152,34 +153,41 @@ int main() {
     }
 
     while (m--) {
-        int op;
-        cin >> op;
-        if (op == 1) {
-            int k;
-            long long x;
-            cin >> k >> x;
-            treap.insert(k, x);
-        } else if (op == 2) {
-            int k;
-            cin >> k;
-            treap.remove(k);
-        } else if (op == 3) {
-            int k;
-            cin >> k;
-            cout << treap.findKth(k) << '\n';
-        } else if (op == 4) {
-            long long x;
-            cin >> x;
-            cout << treap.getIndex(x) << '\n';
-        } else if (op == 5) {
-            int k1, k2;
-            cin >> k1 >> k2;
-            cout << treap.sumRange(k1, k2) << '\n';
-        } else if (op == 6) {
-            int k1, k2;
-            cin >> k1 >> k2;
-            cout << treap.maxRange(k1, k2) << '\n';
+        cin >> cmd;
+        switch (cmd) {
+            case 1: {
+                long long x;
+                cin >> k1 >> x;
+                treap.insert(k1, x);
+                break;
+            }
+            case 2: {
+                cin >> k1;
+                treap.remove(k1);
+                break;
+            }
+            case 3: {
+                cin >> k1;
+                cout << treap.findKth(k1) << '\n';
+                break;
+            }
+            case 4: {
+                cin >> x;
+                cout << treap.getIndex(x) << '\n';
+                break;
+            }
+            case 5: {
+                cin >> k1 >> k2;
+                cout << treap.sumRange(k1, k2) << '\n';
+                break;
+            }
+            case 6: {
+                cin >> k1 >> k2;
+                cout << treap.maxRange(k1, k2) << '\n';
+                break;
+            }
         }
+
     }
     return 0;
 }
